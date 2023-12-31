@@ -1,22 +1,23 @@
 // import React from "react";
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
-import BackButton from '../components/BackButton';
-import Spinner from '../components/Spinner';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useParams } from "react-router-dom";
+import BackButton from "../components/BackButton";
+import Spinner from "../components/Spinner";
+import { useSnackbar } from "notistack";
 
 const ShowBook = () => {
   const [book, setBook] = useState({});
   const [loading, setLoading] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
   const { id } = useParams();
 
   useEffect(() => {
     setLoading(true);
     axios
-      .get(
-        `https://iamkoushik1999-book-store-server.onrender.com/api/v1/book/${id}`
-      )
+      .get(`http://localhost:8888/api/v1/book/${id}`)
       .then((res) => {
+        enqueueSnackbar("Getting Book info", { variant: "info" });
         setBook(res.data);
         setLoading(false);
       })
@@ -24,7 +25,7 @@ const ShowBook = () => {
         console.log(err);
         setLoading(false);
       });
-  }, [id]);
+  }, [id, enqueueSnackbar]);
 
   return (
     <div className='p-4'>
@@ -60,7 +61,7 @@ const ShowBook = () => {
           </div>
           <div className='my-4'>
             <span className='text-xl mr-4 text-gray-500'>
-              Last Update Time :{' '}
+              Last Update Time :{" "}
             </span>
             <span>{new Date(book.updatedAt).toString()}</span>
           </div>
